@@ -1,0 +1,178 @@
+Part 1: Yelp Dataset Profiling and Understanding
+
+1. Profile the data by finding the total number of records for each of the tables below:
+
+SELECT 'attribute' AS TableName, COUNT(*) AS record_count
+FROM attribute
+UNION
+SELECT 'business' AS TableName, COUNT(*) AS record_count
+FROM business
+UNION
+SELECT 'category' AS TableName, COUNT(*) AS record_count
+FROM category
+UNION
+SELECT 'checkin' AS TableName, COUNT(*) AS record_count
+FROM checkin
+UNION
+SELECT 'elite_years' AS TableName, COUNT(*) AS record_count
+FROM elite_years
+UNION
+SELECT 'friend' AS TableName, COUNT(*) AS record_count
+FROM friend
+UNION
+SELECT 'hours' AS TableName, COUNT(*) AS record_count
+FROM hours
+UNION
+SELECT 'photo' AS TableName, COUNT(*) AS record_count
+FROM photo
+UNION
+SELECT 'review' AS TableName, COUNT(*) AS record_count
+FROM review
+UNION
+SELECT 'tip' AS TableName, COUNT(*) AS record_count
+FROM tip
+UNION
+SELECT 'user' AS TableName, COUNT(*) AS record_count
+FROM user;
+
+2. Find the total distinct records by either the foreign key or primary key for each table. If two foreign keys are listed in the table, please specify which foreign key.
+
+SELECT 'attribute' AS attribute, 'business_id' AS key_name, 'foreign_key' AS key_type, COUNT(DISTINCT business_id) AS distinct_records
+FROM attribute
+UNION
+SELECT 'business' AS business, 'id' AS key_name, 'primary_key' AS key_type, COUNT(DISTINCT id) AS distinct_records
+FROM business
+UNION
+SELECT 'category' AS category, 'business_id' AS key_name, 'foreign_key' AS key_type, COUNT(DISTINCT business_id) AS distinct_records
+FROM category
+UNION
+SELECT 'checkin' AS checkin, 'business_id' AS key_name, 'foreign_key' AS key_type, COUNT(DISTINCT business_id) AS distinct_records
+FROM checkin
+UNION
+SELECT 'elite_years' AS elite_years, 'user_id' AS key_name, 'foreign_key' AS key_type, COUNT(DISTINCT user_id) AS distinct_records
+FROM elite_years
+UNION
+SELECT 'friend' AS friend, 'user_id' AS key_name, 'foreign_key' AS key_type, COUNT(DISTINCT user_id) AS distinct_records
+FROM friend
+UNION
+SELECT 'hours' AS hours, 'business_id' AS key_name, 'foreign_key' AS key_type, COUNT(DISTINCT business_id) AS distinct_records
+FROM hours
+UNION
+SELECT 'photo' AS photo, 'id' AS key_name, 'primary_key' AS key_type, COUNT(DISTINCT id) AS distinct_records
+FROM photo
+UNION
+SELECT 'photo' AS photo, 'business_id' AS key_name, 'foreign_key' AS key_type, COUNT(DISTINCT business_id) AS distinct_records
+FROM photo
+UNION
+SELECT 'review' AS review, 'id' AS key_name, 'primary_key' AS key_type, COUNT(DISTINCT id) AS distinct_records
+FROM review
+UNION
+SELECT 'review' AS review, 'business_id' AS key_name, 'foreign_key' AS key_type, COUNT(DISTINCT business_id) AS distinct_records
+FROM review
+UNION
+SELECT 'review' AS review, 'user_id' AS key_name, 'foreign_key' AS key_type, COUNT(DISTINCT user_id) AS distinct_records
+FROM review
+UNION
+SELECT 'tip' AS tip, 'user_id' AS key_name, 'foreign_key' AS key_type, COUNT(DISTINCT user_id) AS distinct_records
+FROM tip
+UNION
+SELECT 'tip' AS tip, 'business_id' AS key_name, 'foreign_key' AS key_type, COUNT(DISTINCT business_id) AS distinct_records
+FROM tip
+UNION
+SELECT 'user' AS user, 'id' AS key_name, 'primary_key' AS key_type, COUNT(DISTINCT id) AS distinct_records
+FROM user;
+
+3. Are there any columns with null values in the Users table? Indicate "yes," or "no."
+
+SELECT *
+FROM user
+WHERE id ISNULL OR 
+    name ISNULL OR 
+    review_count ISNULL OR 
+    yelping_since ISNULL OR 
+    useful ISNULL OR 
+    funny ISNULL OR 
+    cool ISNULL OR 
+    fans ISNULL OR 
+    average_stars ISNULL OR 
+    compliment_hot ISNULL OR 
+    compliment_more ISNULL OR 
+    compliment_profile ISNULL OR 
+    compliment_cute ISNULL OR 
+    compliment_list ISNULL OR 
+    compliment_note ISNULL OR 
+    compliment_plain ISNULL OR 
+    compliment_cool ISNULL OR 
+    compliment_funny ISNULL OR 
+    compliment_writer ISNULL OR 
+    compliment_photos ISNULL;
+
+4. For each table and column listed below, display the smallest (minimum), largest (maximum), and average (mean) value for the following fields:
+
+	SELECT 'Review' AS TableName, MIN(Stars) AS Min, MAX(Stars) AS Max, AVG(Stars) AS Avg
+	FROM Review
+	UNION
+	SELECT 'Business' AS TableName, MIN(Stars) AS Min, MAX(Stars) AS Max, AVG(Stars) AS Avg
+	FROM Business
+	UNION
+	SELECT 'Tip' AS TableName, MIN(Likes) AS Min, MAX(Likes) AS Max, AVG(Likes) AS Avg
+	FROM Tip
+	UNION
+	SELECT 'Checkin' AS TableName, MIN(Count) AS Min, MAX(Count) AS Max, AVG(Count) AS Avg
+	FROM Checkin
+	UNION
+	SELECT 'User' AS TableName, MIN(Review_count) AS Min, MAX(Review_count) AS Max, AVG(Review_count) AS Avg
+	FROM User;
+
+5. List the cities with the most reviews in descending order:
+
+	SELECT City, COUNT(review_count) AS NumOfReviews
+	FROM business
+	GROUP BY city
+	ORDER BY NumOfReviews DESC;
+
+6. Find the distribution of star ratings to the business in the following cities:
+	i. Avon
+
+	SELECT Name, Stars, Review_Count
+	FROM business
+	WHERE city = 'Avon';
+
+	ii. Beachwood
+
+	SELECT Name, Stars, Review_Count
+	FROM business
+	WHERE city = 'Beachwood';
+
+7. Find the top 3 users based on their total number of reviews:	
+
+	SELECT Name, Review_Count
+	FROM user
+	ORDER BY Review_Count DESC
+	LIMIT 3;
+
+8. Does posing more reviews correlate with more fans?
+
+	SELECT Name, Review_Count, Fans
+	FROM user
+	ORDER BY Review_Count DESC;
+
+9. Are there more reviews with the word "love" or with the word "hate" in them?
+
+	SELECT 
+        (SELECT COUNT(text)
+        FROM review
+        WHERE text LIKE '%love%'
+        ) AS Love,
+        (SELECT COUNT(text)
+        FROM review
+        WHERE text LIKE '%hate%'
+        ) AS Hate;
+
+10. Find the top 10 users with the most fans:
+
+	SELECT Name, Fans
+	FROM user
+	ORDER BY fans DESC
+	LIMIT 10;
+
