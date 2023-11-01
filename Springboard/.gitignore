@@ -131,3 +131,7 @@ dmypy.json
 *.png
 *.hdf5
 *.jpg
+csv files/yelp_training_set_business.csv
+csv files/yelp_training_set_review.csv
+csv files/yelp_training_set_flattened.csv
+csv files/yelp_training_set_user.csv
